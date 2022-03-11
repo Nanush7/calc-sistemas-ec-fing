@@ -24,12 +24,12 @@ SOFTWARE.
 
 import sys
 
-def query_yes_no(question, default="yes"):
+def query_yes_no(question, default="si"):
     """Ask a yes/no question via raw_input() and return their answer.
 
     "question" is a string that is presented to the user.
     "default" is the presumed answer if the user just hits <Enter>.
-        It must be "yes" (the default), "no" or None (meaning
+        It must be "si" (the default), "no" or None (meaning
         an answer is required of the user).
 
     The "answer" return value is True for "si" or False for "no".
@@ -38,7 +38,7 @@ def query_yes_no(question, default="yes"):
              "no": False, "n": False}
     if default is None:
         prompt = " [s/n] "
-    elif default == "yes":
+    elif default == "si":
         prompt = " [S/n] "
     elif default == "no":
         prompt = " [s/N] "

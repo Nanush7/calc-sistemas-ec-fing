@@ -15,7 +15,7 @@ class Output:
                 'red': Fore.LIGHTRED_EX,
                 'green': Fore.LIGHTGREEN_EX,
                 'white': Fore.LIGHTWHITE_EX,
-                'yellow': Fore.LIGHTYELLOW_EX
+                'yellow': Fore.YELLOW
             }
         else:
             self.colors = {
@@ -26,13 +26,13 @@ class Output:
             }
 
     def info(self, msg: str) -> None:
-        print(self.color['white'] + 'INFO: ' + msg)
+        print(self.colors['white'] + 'INFO: ' + msg)
 
     def success(self, msg: str) -> None:
-        print(self.color['green'] + msg)
+        print(self.colors['green'] + msg)
 
     def warning(self, msg: str) -> None:
-        print(self.color['yellow'] + 'WARNING: ' + msg)
+        print(self.colors['yellow'] + 'WARNING: ' + msg)
 
     def error(self, msg: str) -> None:
-        print(self.color['red'] + 'ERROR: ' + msg)
+        print(self.colors['red'] + 'ERROR: ' + msg)
