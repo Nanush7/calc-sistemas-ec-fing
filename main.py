@@ -1,6 +1,8 @@
 """
 Copyright (c) 2022 Nanush7. MIT license, see LICENSE file.
 """
+import fractions
+import os
 from time import sleep
 from typing import List
 
@@ -19,6 +21,7 @@ class CalcApp:
     def __init__(self):
         use_colors = query_yes_no('¿Utilizar salida de colores?', 'si')
         self.out = Output(color=use_colors)
+        self.os = os.name
 
     def get_matrix(self):
         """
@@ -31,6 +34,8 @@ class CalcApp:
                 # n = columnas (incógnitas).
                 m = int(input('m (cantidad de filas) = '))
                 n = int(input('n (cantidad de columnas) = '))
+                self.m = m
+                self.n = n
                 if m < 1 or n < 1:
                     self.out.error('m y n deben ser mayores o iguales a 1.')
                     continue
@@ -38,17 +43,20 @@ class CalcApp:
             except ValueError:
                 self.out.error('m y n deben ser números de tipo int.')
 
+        self.clear()
+
         # Obtener valores.
         self.out.info(
-            'Para ingresar una fila a la matriz, debes escribir todos los coeficientes separados por espacios.')
+            'Para ingresar una fila a la matriz, debes escribir todos los coeficientes y el término independiente, separados por espacios.')
         self.out.info('Las fracciones deben ingresarse con la forma a/b.')
-        self.out.info(f'Debe ingresar {n} coeficientes por fila.')
+        self.out.info(f'Debe ingresar {n} números por fila.')
 
         # ¿float64?
         matrix = np.zeros((m, n), dtype=np.float32)
 
         # Se agrega fila por fila a la matriz.
         for row_index in range(m):
+            print('----------------------')
             while True:
                 self.out.info(f'Fila: {row_index + 1}')
 
@@ -59,7 +67,6 @@ class CalcApp:
                         raise IndexError
 
                     # Preguntar al usuario si la fila es correcta.
-                    self.out.info(f'fila {row_index + 1} = {row_list}')
                     if query_yes_no('¿Continuar?', 'si'):
                         # Agregar la fila a la matriz.
                         matrix[row_index] = row_list
@@ -79,33 +86,56 @@ class CalcApp:
                     except KeyboardInterrupt:
                         self.out.warning('Interrumpiste el minuto de silencio >:(')
 
-        return matrix
+        return Calc(matrix, m, n)
 
     def _get_float_list(self, string_input: str) -> List[float]:
         # Separar el input donde hay espacios.
         raw_list = string_input.split(' ')
 
-        # Verificar y transformar fracciones en números.
+        # Verificar y crear objetos de fracciones.
         for index, val in enumerate(raw_list):
             if '/' in val:
                 # Obtener los números de la fracción.
                 nums = val.split('/')
-                # Reemplazar por el valor calculado. Si hay más de un "/", se ignora.
-                raw_list[index] = int(nums[0]) / int(nums[1])
-        # Tomar las entradas de la lista y transformarlas en float,
-        # siempre que la entrada no sea un espacio ingresado por error.
-        float_list = [float(num) for num in raw_list if num != '']
+                # Reemplazar por el objeto de Fraction. Si hay más de un "/", se ignora.
+                raw_list[index] = fractions.Fraction(int(nums[0]), int(nums[1]))
+
+        # Tomar las entradas de la lista y transformarlas en float.
+        float_list = []
+        for num in raw_list:
+            # Puede haber espacios agregados por error,
+            # no es deseable que de errores al intentar convertilos a float,
+            # simplemente se ignoran.
+            if num != '':
+                # Si el valor es una fracción, evitar convertirlo a float.
+                if isinstance(num, fractions.Fraction):
+                    float_list.append(num)
+                else:
+                    float_list.append(float(num))
+
         return float_list
+
+    def clear(self) -> None:
+        if self.os == 'nt':
+            os.system('cls')
+        else:
+            os.system('clear')
 
     def run(self):
         """
         Correr aplicación.
         """
+        self.clear()
+
         self.out.info(
             'En los siguientes pasos deberá generar la matriz a calcular.')
+
         matrix = self.get_matrix()
-        self.out.success(str(matrix))
-        # calc = Calc(matrix)
+        self.clear()
+
+        self.out.success(str(matrix.matrix))  # DEBUG.
+        result = matrix.calculate()
+        self.out.success(str(matrix.matrix))  # DEBUG.
 
 if __name__ == '__main__':
     app = CalcApp()
