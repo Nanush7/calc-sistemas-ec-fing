@@ -48,9 +48,10 @@ class Calc:
             i0 += 1
 
         # Reducir.
-        i0 = 0
-        for j in range(self.n):
+        for i in range(self.m):
             # Paso 3: aplicar transformaciones lineales para
             # que las primeras entradas no nulas sean 1.
-            pass
-
+            for j in range(self.n - 1):
+                if self.matrix[i, j] != 0:
+                    self.matrix[i, :] /= self.matrix[i, j]
+                    break
