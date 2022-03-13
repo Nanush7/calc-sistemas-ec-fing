@@ -24,22 +24,33 @@ class Calc:
 
         i0 = 0  # Fila en la que comienza la ventana.
 
+        # Escalerizar.
         for j in range(self.n):
             if all(i == 0 for i in self.matrix[:, j]):
                 continue
 
-            for i in range(self.m):
+            for i in range(i0, self.m):
                 if self.matrix[i, j] != 0:
-                    for ii in range(i):
+                    for ii in range(i0, i):
                         if self.matrix[ii, j] == 0:
                             # Las filas se intercambian de lugar.
                             self.matrix[[i, ii]] = self.matrix[[ii, i]]
                             break
 
-            # Ahora hay que hacer las combinaciones
+            # Paso 2: realizar las combinaciones
             # lineales correspondientes.
             for i in range(i0 + 1, self.m):
+                if self.matrix[i, j] == 0:
+                    break
                 self.matrix[i, :] -= (self.matrix[i, j] / self.matrix[i0, j]) * self.matrix[i0, :]
 
-            # TODO: Ajustar i0.
-            i0 += 1  # ¿Está bien esto?
+            # Bajar un escalón.
+            i0 += 1
+
+        # Reducir.
+        i0 = 0
+        for j in range(self.n):
+            # Paso 3: aplicar transformaciones lineales para
+            # que las primeras entradas no nulas sean 1.
+            pass
+

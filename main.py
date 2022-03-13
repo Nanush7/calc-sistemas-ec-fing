@@ -130,7 +130,8 @@ class CalcApp:
         self.out.info(
             'En los siguientes pasos deberá generar la matriz a calcular.')
 
-        matrix = self.get_matrix()
+        # matrix = self.get_matrix()
+        matrix = Calc(np.array([[-2, 0, 1, 0, 0, 4], [0, -8, 0, 4, -2, 4], [-1, 0, 1, 0, 0, 3], [0, -2, 0, 1, -1, 3], [1, 0, 1, 0, 0, 1], [0, 1, 0, 1, 1, 1]], dtype=np.float32), 6, 6)
         self.clear()
 
         self.out.success(str(matrix.matrix))  # DEBUG.
